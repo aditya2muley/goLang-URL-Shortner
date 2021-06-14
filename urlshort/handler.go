@@ -1,6 +1,9 @@
 package urlshort
 
 import (
+	"fmt"
+	"io/ioutil"
+	"log"
 	"net/http"
 
 	"gopkg.in/yaml.v2"
@@ -61,6 +64,16 @@ func YAMLHandler(yml []byte, fallback http.Handler) (http.HandlerFunc, error) {
 		return nil, err
 	}
 	return MapHandler(urlStrings, fallback), nil
+}
+
+func ReadYmlFile(ymlFile string) []byte {
+	fmt.Println(ymlFile)
+	yamlFile, err := ioutil.ReadFile(ymlFile)
+	if err != nil {
+		log.Printf("yamlFile.Get err   #%v ", err)
+	}
+
+	return yamlFile
 }
 
 type ymlDt struct {

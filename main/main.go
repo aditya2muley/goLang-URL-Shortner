@@ -1,15 +1,23 @@
 package main
 
 import (
+	"flag"
 	"fmt"
 	"net/http"
 
 	"example.com/urlshort"
 )
 
+var fileName *string
+
+func init() {
+	fileName = flag.String("fname", "urlpaths.yml", "Yml File containing URL and Paths")
+	flag.Parse()
+}
+
 func main() {
 	mux := defaultMux()
-
+	ymlFileContaint := urlshort.ReadYmlFile(*fileName)
 	// Build the MapHandler using the mux as the fallback
 	pathsToUrls := map[string]string{
 		"/google": "https://google.com",
@@ -20,13 +28,7 @@ func main() {
 
 	// Build the YAMLHandler using the mapHandler as the
 	// fallback
-	yaml_dt := `
-- path: /urlshort
-  url: https://github.com/gophercises/urlshort
-- path: /urlshort-final
-  url: https://github.com/gophercises/urlshort/tree/solution
-`
-	yamlHandler, err := urlshort.YAMLHandler([]byte(yaml_dt), mapHandler)
+	yamlHandler, err := urlshort.YAMLHandler(ymlFileContaint, mapHandler)
 	if err != nil {
 		panic(err)
 	}
